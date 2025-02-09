@@ -7,3 +7,4 @@ Pillow
 scikit-learn
 xlrd
 category-encoders
+xgboost
