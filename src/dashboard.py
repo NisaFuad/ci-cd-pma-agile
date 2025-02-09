@@ -71,12 +71,25 @@ st.markdown(
     .stButton>button:hover {
         background-color: #333333; /* Slightly darker on hover */
     }
-    
+
     /* DataFrame Styling */
     .stDataFrame {
         border: 2px solid #888888;
         border-radius: 5px;
     }
+
+        /* Apply to all pages */
+    .stApp {
+        color: #333333; /* Dark gray font color */
+    }
+    
+    /* Specific styles for Page 3, 4, and 5 */
+    .stPage4 h1, .stPage4 h2, .stPage4 h3, .stPage4 p,
+    .stPage5 h1, .stPage5 h2, .stPage5 h3, .stPage5 p,
+    .stPage6 h1, .stPage6 h2, .stPage6 h3, .stPage6 p {
+        color: #333333 !important; /* Dark gray font color */
+    }
+
     </style>
     """,
     unsafe_allow_html=True
@@ -283,6 +296,7 @@ elif options == "Data Visualization":
 
 # Page 4: Model Performance Comparison
 elif options == "Models Evaluation":
+    st.markdown('<div class="stPage4">', unsafe_allow_html=True)
     st.header("📈 Models Evaluation")
     st.write("This page compares the performance of the four models used for employee attrition prediction.")
 
@@ -318,8 +332,11 @@ elif options == "Models Evaluation":
         ax.grid(True)
         st.pyplot(fig)
 
+        st.markdown('</div>', unsafe_allow_html=True)
+
 # Page 5: Predict Future Attrition
 elif options == "Predict Attrition":
+    st.markdown('<div class="stPage5">', unsafe_allow_html=True)
     st.header("🔮 Predict Future Employee Attrition")
     st.write("This page allows you to predict attrition based on user selection, based on the best performing model (Gradient Boosting).")
 
@@ -390,8 +407,11 @@ elif options == "Predict Attrition":
 
         st.write(f"Prediction Probability: {prediction_prob[0][1]:.2f}")
 
+    st.markdown('</div>', unsafe_allow_html=True)
+
 # Page 6: Upload File for Prediction
 elif options == "Upload File for Prediction":
+    st.markdown('<div class="stPage6">', unsafe_allow_html=True)
     st.header("📤 Upload File for Prediction")
     st.write("This page allows you to predict employee attrition based on file upload.")
 
@@ -462,6 +482,7 @@ elif options == "Upload File for Prediction":
 
             st.subheader("Prediction Results")
             st.write(uploaded_data)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
 st.sidebar.markdown("---")
