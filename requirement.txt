@@ -8,3 +8,4 @@ scikit-learn
 xlrd
 category-encoders
 xgboost
+joblib
