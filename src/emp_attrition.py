@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 
 # Library for supervised learning algorithm
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -27,7 +27,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load dataset
-employee_data = pd.read_csv("data/WA_Fn-UseC_-HR-Employee-Attrition.csv")
+employee_data = pd.read_csv("data/HR_Dataset.csv")
 
 # Print the first five rows
 print("\nFirst 5 row of dataset:\n", employee_data.head())
@@ -44,6 +44,14 @@ print("\nMissing Data:\n", employee_data.isnull().sum())
 
 # Checking for duplicate records
 print("\nDuplicates in Dataset: ", employee_data.duplicated().sum())
+
+# Remove duplicate rows
+employee_data = employee_data.drop_duplicates()
+print(f"Dataset shape after removing duplicates: {employee_data.shape}")
+
+# Save the processed dataset
+employee_data.to_csv('data/processed_df.csv', index=False)
+print("Processed dataset saved to data/processed_df.csv")
 
 # Identify the data types of columns
 column_data_types = employee_data.dtypes
@@ -88,83 +96,22 @@ cat_cols = employee_data.select_dtypes(include=['object']).columns
 
 for column in cat_cols:
     print('Unique values of ', column, set(employee_data[column]))
-    print("-"*140)
-
-
-# Dropping 4 attributes which doesn't give any meaningful insights in analysis
-employee_data = employee_data.drop([
-    'Over18', 'EmployeeCount', 'EmployeeNumber', 'StandardHours'], axis=1)
-
+    print("-"*50)
 
 # Checking the count of target variables
-print("\nTarget Variable Info:", employee_data['Attrition'].value_counts())
+print("\nTarget Variable Info:", employee_data['left'].value_counts())
 
-
-# Encoding for categorical features for Correlation Analysis
-
-# Replace 'Gender' column values with numerical labels using manual encoding
-employee_data["Gender"] = employee_data["Gender"].replace({"Female": 0,
-                                                           "Male": 1})
-
-# Perform LabelEncoder for 'Attrition' column
+# creating labelEncoder
 le = LabelEncoder()
-employee_data["Attrition"] = le.fit_transform(employee_data['Attrition'])
 
-# Perform OneHotEncoder for multiple categorical columns
-encoder = OneHotEncoder()
-encoded = encoder.fit_transform(
-    employee_data[['Department',
-                   'EducationField',
-                   'JobRole',
-                   'MaritalStatus',
-                   'OverTime',
-                   'BusinessTravel']])
-
-encoded_df = pd.DataFrame(encoded.toarray(),
-                          columns=encoder.get_feature_names_out())
-employee_data = pd.concat([employee_data, encoded_df], axis=1)
-employee_data = employee_data.drop(
-    ['Department',
-     'EducationField',
-     'JobRole',
-     'MaritalStatus',
-     'OverTime',
-     'BusinessTravel'], axis=1)
-
-# Checking Multicollinearity
-
-# Calculate the correlation matrix
-corr_matrix = employee_data.corr()
-
-# Create a mask
-high_corr_mask = corr_matrix >= 0.75
-
-# Identify and list the highly correlated features (multicollinearity)
-highly_corr_feat = []
-
-for feat in high_corr_mask.columns:
-    corr_with = high_corr_mask.index[
-        high_corr_mask[feat]].tolist()
-    for corr_feat in corr_with:
-        if feat != corr_feat and (corr_feat, feat) not in highly_corr_feat:
-            highly_corr_feat.append((feat, corr_feat))
-
-# Print the highly correlated features
-print("\nHighly correlated features (multicollinearity):")
-for feature1, feature2 in highly_corr_feat:
-    print(f"{feature1} and {feature2}")
-
-# droping columns which are highly correlated
-
-cols = ["JobLevel", "TotalWorkingYears", "PercentSalaryHike",
-        "YearsInCurrentRole", "YearsWithCurrManager"]
-employee_data.drop(columns=cols, inplace=True)
-
+# Converting string labels into numbers.
+employee_data['salary'] = le.fit_transform(employee_data['salary'])
+employee_data['Departments'] = le.fit_transform(employee_data['Departments'])
 
 # Split the data into Independent (X) and Target Variable (Y)
 
-x = employee_data.drop(['Attrition'], axis=1)
-y = employee_data[['Attrition']]
+x = employee_data.drop(['left'], axis=1)
+y = employee_data[['left']]
 
 x_train, x_test, y_train, y_test = train_test_split(x,
                                                     y,
