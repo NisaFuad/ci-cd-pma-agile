@@ -9,3 +9,4 @@ xlrd
 category-encoders
 xgboost
 joblib
+imbalanced-learn

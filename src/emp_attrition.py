@@ -14,10 +14,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score, recall_score, precision_score
 from sklearn.metrics import f1_score, roc_auc_score
+from imblearn.over_sampling import SMOTE
 
 # Import Joblib & Pickle
 import joblib
@@ -69,6 +71,20 @@ for column_name, data_type in column_data_types.items():
 # Print the counts
 print(f"\nThere are {numerical_count} Numerical Columns in dataset")
 print(f"There are {categorical_count} Categorical Columns in dataset\n")
+
+# Save numerical and categorical column information to a file
+column_info = {
+    'Numerical Columns': employee_data.select_dtypes(
+        include=['number']).columns.tolist(),
+    'Categorical Columns': employee_data.select_dtypes(
+        include=['object']).columns.tolist()
+}
+
+# Convert to DataFrame and save as CSV
+column_info_df = pd.DataFrame.from_dict(
+    column_info, orient='index').transpose()
+column_info_df.to_csv('data/column_info.csv', index=False)
+print("Column information saved to data/column_info.csv")
 
 # Random sample of dataset with only numerical feature
 employee_data.select_dtypes(np.number).sample(5)
@@ -138,7 +154,11 @@ G_Mean = []
 # Model Building
 
 def model_prediction_unscaled(model):
+
+    # Train the model
     model.fit(x_train, y_train)
+
+    # Make predictions
     x_train_pred = model.predict(x_train)
     x_test_pred = model.predict(x_test)
     y_test_prob = model.predict_proba(x_test)[:, 1]
@@ -150,11 +170,12 @@ def model_prediction_unscaled(model):
 
     a = accuracy_score(y_train, x_train_pred)*100
     b = accuracy_score(y_test, x_test_pred)*100
-    c = precision_score(y_test, x_test_pred)
-    d = recall_score(y_test, x_test_pred)
+    c = precision_score(y_test, x_test_pred, average='binary')
+    d = recall_score(y_test, x_test_pred, average='binary')
     e = roc_auc_score(y_test, y_test_prob)
-    f = f1_score(y_test, x_test_pred)
+    f = f1_score(y_test, x_test_pred, average='binary')
 
+    # Append metrics to lists
     training_score.append(a)
     testing_score.append(b)
     precission.append(c)
@@ -162,6 +183,7 @@ def model_prediction_unscaled(model):
     Roc_Auc_score.append(e)
     f1_score_.append(f)
 
+    # Print results
     print("\n-----------------------------------------------------")
     print(f"Accuracy_Score of {model} model on Training Data is:", a)
     print(f"Accuracy_Score of {model} model on Testing Data is:", b)
@@ -172,14 +194,17 @@ def model_prediction_unscaled(model):
 
     print("\n-----------------------------------------------------")
     print(f"Classification Report of {model} model is:")
-    print(classification_report(y_test, model.predict(x_test)))
+    print(classification_report(y_test, x_test_pred))
 
 
 # Decision Tree
-model_prediction_unscaled(DecisionTreeClassifier())
+model_prediction_unscaled(DecisionTreeClassifier(class_weight='balanced'))
+
+# Balanced Random Forest
+model_prediction_unscaled(BalancedRandomForestClassifier(random_state=42))
 
 # Random Forest
-model_prediction_unscaled(RandomForestClassifier())
+model_prediction_unscaled(RandomForestClassifier(class_weight='balanced'))
 
 # Gradient Boosting
 model_prediction_unscaled(GradientBoostingClassifier())
