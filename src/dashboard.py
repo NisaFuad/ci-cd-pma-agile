@@ -29,7 +29,7 @@ def load_column_info():
 column_info = load_column_info()
 
 # Streamlit App Title
-st.title("Employee Attrition Prediction Dashboard")
+st.title("🤖 Employee Attrition Prediction Dashboard")
 
 # Custom CSS for background and sidebar styling
 st.markdown(
@@ -111,7 +111,7 @@ if options == "Overview":
     Welcome to the **Employee Attrition Prediction Dashboard**! This interactive dashboard allows you to explore and analyze employee attrition data, 
     compare the performance of different machine learning models and predict attrition for individual employees or based on uploaded datasets.
 
-    ### Key Features:
+    ### 🌟Key Features:
     - **Dataset Overview**: Explore the dataset, view basic statistics, and check for missing or duplicate data.
     - **Data Visualization**: Visualize key trends and patterns in the dataset using interactive charts.
     - **Model Performance Comparison**: Compare the performance of different machine learning models used for attrition prediction.
@@ -456,7 +456,7 @@ elif options == "Upload File for Prediction":
         expected_columns_normalized = [col.strip().lower() for col in expected_columns]
 
         if not all(col in uploaded_columns for col in expected_columns_normalized):
-            st.error(f"Error: The uploaded file does not match the expected structure. Please check the column names. Expected: {expected_columns}, Found: {uploaded_data.columns.tolist()}")
+            st.error(f"❌ Error: The uploaded file does not match the expected structure. Please check the column names. Expected: {expected_columns}, Found: {uploaded_data.columns.tolist()}")
         else:
             # Preprocess the uploaded data
             uploaded_data_encoded = uploaded_data.copy()
