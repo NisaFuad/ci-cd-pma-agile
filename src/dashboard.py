@@ -99,7 +99,7 @@ st.markdown(
 st.sidebar.title("🗂️ Page Navigation")
 options = st.sidebar.radio("Select a Page",
                            ["Overview",
-                            "EDA",
+                            "Data Preprocessing",
                             "Data Visualization",
                             "Models Evaluation",
                             "Predict Attrition",
@@ -121,9 +121,9 @@ if options == "Overview":
     Use the sidebar to navigate between pages and explore the features of this dashboard.
     """)
 
-# Page 2: Dataset EDA
-if options == "EDA":
-    st.header("👥 EDA and Preprocessing")
+# Page 2: Data Preprocessing
+if options == "Data Preprocessing":
+    st.header("🔄 Data Preprocessing")
     st.write("This page provides an overview & preprocessing of the dataset.")
 
     # Display the first 5 rows of the dataset
