@@ -413,7 +413,7 @@ elif options == "Predict Attrition":
 elif options == "Upload File for Prediction":
     st.markdown('<div class="stPage6">', unsafe_allow_html=True)
     st.header("📤 Upload File for Prediction")
-    st.write("This page allows you to predict employee attrition based on file upload.")
+    st.write("This page allows you to predict employee attrition in batches, based on file upload.")
 
     # Display the expected dataset structure
     st.subheader("Expected Dataset Structure")
